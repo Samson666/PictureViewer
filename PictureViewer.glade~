@@ -80,7 +80,7 @@
         <property name="border_width">10</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkImage" id="window_image">
+          <object class="GtkImage">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="stock">gtk-missing-image</property>

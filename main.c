@@ -21,15 +21,24 @@
 #include <ctype.h>
 
 //Pointer declarations
-//Top Widget:
-GtkWidget *window;
 //Builder object
 GtkBuilder *builder;
 //List of widgets
-GtkWidget *fixed;
-GtkWidget *button;
-GtkWidget *label;
-//Add more widgets here...
+//Main Window
+GtkWidget *window;
+GtkWidget *window_box;
+GtkWidget *window_image;
+GtkWidget *window_button_box;
+GtkWidget *window_button_open;
+GtkWidget *window_button_close;
+//File Dialog.
+GtkWidget *file_dialog;
+GtkWidget *file_box;
+GtkWidget *file_button_box;
+GtkWidget *button_file_dialog_ok;
+GtkWidget *button_file_dialog_cancel;
+GtkWidget *filechooser_button_file_dialog;
+
 
 //The main function
 int main(int argc, char* argv[])
@@ -38,19 +47,23 @@ int main(int argc, char* argv[])
     gtk_init(&argc, &argv);
 
     //Create the builder object from the UI/XML file
-    builder = gtk_builder_new_from_file("gtx-test.glade");
+    builder = gtk_builder_new_from_file("PictureViewer.glade");
     //Create the top widget
     window = GTK_WIDGET(gtk_builder_get_object(builder, "window"));
-    //Handling the gtk_main_quit when the proram is closed
+    //Handling the gtk_main_quit when the program is closed
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit),NULL);
     //Connect the widget signals
     gtk_builder_connect_signals(builder, NULL);
 
     //Definit the above declared widget pointer
-    fixed = GTK_WIDGET(gtk_builder_get_object(builder, "fixed"));
-    button = GTK_WIDGET(gtk_builder_get_object(builder, "button"));
-    label = GTK_WIDGET(gtk_builder_get_object(builder, "label"));
+    window_box = GTK_WIDGET(gtk_builder_get_object(builder, "window_box"));
+    window_image = GTK_WIDGET(gtk_builder_get_object(builder, "window_image"));
+    window_button_box = GTK_WIDGET(gtk_builder_get_object(builder, "window_button_box"));
+    window_button_open = GTK_WIDGET(gtk_builder_get_object(builder, "window_button_open"));
+    window_button_close = GTK_WIDGET(gtk_builder_get_object(builder, "window_button_close"));
 
+    g_signal_connect(window_button_close,"clicked",G_CALLBACK(gtk_main_quit),NULL);
+    
     //Show the top level
     gtk_widget_show(window);
 
@@ -61,10 +74,10 @@ int main(int argc, char* argv[])
     return EXIT_SUCCESS;
 }
 
-//Handle the signal(s)
-void on_button_clicked(GtkButton *b)
-{
-    gtk_label_set_text(GTK_LABEL(label), (const gchar*)"Hello World!");
-}
-//Add more signal handler here...
+// //Handle the signal(s)
+// void on_button_clicked(GtkButton *b)
+// {
+//     gtk_label_set_text(GTK_LABEL(label), (const gchar*)"Hello World!");
+// }
+// //Add more signal handler here...
 
