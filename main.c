@@ -31,8 +31,11 @@ GtkWidget *window_image;
 GtkWidget *window_button_box;
 GtkWidget *window_button_open;
 GtkWidget *window_button_close;
+GtkWidget *window_seperator;
+gchar filename[64];
+GdkPixbuf *pixbuf;
 
-static void open_file_dialog()
+static void open_file_dialog(gchar *fn)
 {
     GtkWidget *file_dialog;
     file_dialog = gtk_file_chooser_dialog_new("Choose a file", GTK_WINDOW(window),
@@ -40,8 +43,12 @@ static void open_file_dialog()
                                               GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, NULL);
     gtk_widget_show(file_dialog);
     gint resp = gtk_dialog_run(GTK_DIALOG(file_dialog));
-    if(resp == GTK_RESPONSE_OK) printf("%s\n", gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_dialog)));
-    else printf("You pressed Cancel!\n");
+    if(resp == GTK_RESPONSE_OK) 
+    {
+        //printf("%s\n", gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_dialog)));
+        strcpy(fn, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_dialog)));
+    }
+    //else printf("You pressed Cancel!\n");
     gtk_widget_destroy(file_dialog);                                          
 }
 
@@ -67,6 +74,7 @@ int main(int argc, char* argv[])
     window_button_box = GTK_WIDGET(gtk_builder_get_object(builder, "window_button_box"));
     window_button_open = GTK_WIDGET(gtk_builder_get_object(builder, "window_button_open"));
     window_button_close = GTK_WIDGET(gtk_builder_get_object(builder, "window_button_close"));
+    window_seperator = GTK_WIDGET(gtk_builder_get_object(builder, "window_seperator"));
 
     g_signal_connect(window_button_close,"clicked", G_CALLBACK(gtk_main_quit),NULL);
 
@@ -85,7 +93,12 @@ int main(int argc, char* argv[])
 
 void on_window_button_open_clicked()
 {
-    open_file_dialog();
+    open_file_dialog(filename);
+    printf("filename: %s\n", filename);
+    pixbuf = gdk_pixbuf_new_from_file_at_size((const gchar *)filename, 100,100,NULL);
+    gtk_image_set_from_pixbuf(GTK_IMAGE(window_image), pixbuf);
+    pixbuf = gdk_pixbuf_scale_simple(pixbuf, 300,200, GDK_INTERP_BILINEAR);
+    gtk_image_set_from_pixbuf(GTK_IMAGE(window_image), pixbuf);
 }
 
 void on_window_button_close_clicked()
