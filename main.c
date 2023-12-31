@@ -31,14 +31,19 @@ GtkWidget *window_image;
 GtkWidget *window_button_box;
 GtkWidget *window_button_open;
 GtkWidget *window_button_close;
-//File Dialog.
-GtkWidget *file_dialog;
-GtkWidget *file_box;
-GtkWidget *file_button_box;
-GtkWidget *button_file_dialog_ok;
-GtkWidget *button_file_dialog_cancel;
-GtkWidget *filechooser_button_file_dialog;
 
+static void open_file_dialog()
+{
+    GtkWidget *file_dialog;
+    file_dialog = gtk_file_chooser_dialog_new("Choose a file", GTK_WINDOW(window),
+                                              GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_OK, GTK_RESPONSE_OK,
+                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, NULL);
+    gtk_widget_show(file_dialog);
+    gint resp = gtk_dialog_run(GTK_DIALOG(file_dialog));
+    if(resp == GTK_RESPONSE_OK) printf("%s\n", gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_dialog)));
+    else printf("You pressed Cancel!\n");
+    gtk_widget_destroy(file_dialog);                                          
+}
 
 //The main function
 int main(int argc, char* argv[])
@@ -55,15 +60,16 @@ int main(int argc, char* argv[])
     //Connect the widget signals
     gtk_builder_connect_signals(builder, NULL);
 
-    //Definit the above declared widget pointer
+    //Define the above declared widget pointer
+    //Main window
     window_box = GTK_WIDGET(gtk_builder_get_object(builder, "window_box"));
     window_image = GTK_WIDGET(gtk_builder_get_object(builder, "window_image"));
     window_button_box = GTK_WIDGET(gtk_builder_get_object(builder, "window_button_box"));
     window_button_open = GTK_WIDGET(gtk_builder_get_object(builder, "window_button_open"));
     window_button_close = GTK_WIDGET(gtk_builder_get_object(builder, "window_button_close"));
 
-    g_signal_connect(window_button_close,"clicked",G_CALLBACK(gtk_main_quit),NULL);
-    
+    g_signal_connect(window_button_close,"clicked", G_CALLBACK(gtk_main_quit),NULL);
+
     //Show the top level
     gtk_widget_show(window);
 
@@ -75,9 +81,14 @@ int main(int argc, char* argv[])
 }
 
 // //Handle the signal(s)
-// void on_button_clicked(GtkButton *b)
-// {
-//     gtk_label_set_text(GTK_LABEL(label), (const gchar*)"Hello World!");
-// }
-// //Add more signal handler here...
 
+
+void on_window_button_open_clicked()
+{
+    open_file_dialog();
+}
+
+void on_window_button_close_clicked()
+{
+    gtk_button_set_label(GTK_BUTTON(window_button_close), (const gchar*)"Close");
+}
